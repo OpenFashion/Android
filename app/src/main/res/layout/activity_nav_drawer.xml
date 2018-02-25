@@ -10,7 +10,7 @@
     tools:openDrawer="start"
     tools:context="illinois.hack.openfashion.NavDrawerActivity">
 
-    <android.support.design.widget.CoordinatorLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -29,7 +29,22 @@
 
         </android.support.design.widget.AppBarLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+        <Button
+            android:id="@+id/camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/come_take_a_picture"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavView" />
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@id/bottomNavView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_navigation_items" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
