@@ -29,6 +29,12 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <RelativeLayout
+            android:id="@+id/fragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavView"/>
+
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/bottomNavView"
             android:layout_width="match_parent"

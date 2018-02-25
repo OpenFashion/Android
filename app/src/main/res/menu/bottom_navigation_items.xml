@@ -2,11 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/action_search"
         android:title="@string/menu_search"
+        android:checked="true"
         android:icon="@drawable/ic_search_white_24dp" />
     <item android:id="@+id/action_camera"
         android:title="@string/menu_camera"
+        android:checked="false"
         android:icon="@drawable/ic_camera_white_24dp" />
     <item android:id="@+id/action_closet"
         android:title="@string/menu_closet"
+        android:checked="false"
         android:icon="@drawable/ic_view_module_white_24dp" />
 </menu>
