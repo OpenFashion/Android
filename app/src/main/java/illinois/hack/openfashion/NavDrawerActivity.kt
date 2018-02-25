@@ -1,6 +1,9 @@
 package illinois.hack.openfashion
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.FragmentManager
+import android.app.FragmentTransaction
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,7 +13,7 @@ import android.support.v4.widget.DrawerLayout
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.constraint.ConstraintLayout
+import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -24,8 +27,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 
 import com.google.android.gms.auth.api.Auth
@@ -72,12 +73,14 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
 
     private val CAMERA_REQUEST_CODE: Int = 0
 
-    private lateinit var imageView: ImageView
-    private lateinit var button: Button
+    private lateinit var bottomNavView: BottomNavigationView
     private lateinit var layout: DrawerLayout
     private lateinit var mStorage: StorageReference
 
     lateinit var mCurrentPhotoPath: String
+
+//    lateinit var fragmentManager: FragmentManager
+//    lateinit var fragmentTransaction: FragmentTransaction
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,19 +118,35 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
 
         mStorage = FirebaseStorage.getInstance().reference
 
-//        imageView = findViewById(R.id.imageView)
+//        fragmentManager = getFragmentManager()
+//        fragmentTransaction = fragmentManager.beginTransaction()
+
+        bottomNavView = findViewById(R.id.bottomNavView)
         layout = findViewById(R.id.drawer)
-        button = findViewById(R.id.camera_button)
-        button.setOnClickListener {
+        bottomNavView.selectedItemId = R.id.action_search
+        bottomNavView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.action_camera -> {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                            // supposed to show reasoning here but why should i
+                        }
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-                    // supposed to show reasoning here but why should i
+                    } else {
+                        goToCamera()
+                    }
+                    true
                 }
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
+                R.id.action_search -> {
 
-            } else {
-                goToCamera()
+                    true
+                }
+                R.id.action_closet -> {
+
+                    true
+                }
+                else -> false
             }
         }
     }
@@ -180,10 +199,6 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
         }
         drawerLayout!!.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
-    }
-
-    private fun cameraActivity() {
-
     }
 
     // This method configures Google SignIn
@@ -260,6 +275,7 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
@@ -275,6 +291,12 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.absolutePath
         return image
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun fileName(): String {
+        val timeStamp = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Date())
+        return "In/$timeStamp.png"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -295,7 +317,7 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
 
             var byte = bArray.toByteArray()
 
-            var reference = mStorage.child( "image.png" )
+            var reference = mStorage.child( fileName() )
 
             var uploadTask = reference.putBytes( byte )
             uploadTask.addOnFailureListener({ println( "upload failed" ) })
