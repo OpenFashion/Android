@@ -27,6 +27,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.widget.Toast
 
 import com.google.android.gms.auth.api.Auth
@@ -79,8 +80,8 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
 
     lateinit var mCurrentPhotoPath: String
 
-//    lateinit var fragmentManager: FragmentManager
-//    lateinit var fragmentTransaction: FragmentTransaction
+    lateinit var mFragmentManager: FragmentManager
+    var fragmentContainer = R.id.fragmentContainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,8 +119,10 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
 
         mStorage = FirebaseStorage.getInstance().reference
 
-//        fragmentManager = getFragmentManager()
-//        fragmentTransaction = fragmentManager.beginTransaction()
+        mFragmentManager = fragmentManager
+        fragmentManager.beginTransaction()
+                .add(R.id.fragmentContainer, SearchFragment())
+                .commit()
 
         bottomNavView = findViewById(R.id.bottomNavView)
         layout = findViewById(R.id.drawer)
@@ -139,11 +142,16 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
                     true
                 }
                 R.id.action_search -> {
-
+                    fragmentManager.beginTransaction().replace(fragmentContainer, SearchFragment())
+                            .addToBackStack(null)
+                            .commit()
                     true
                 }
                 R.id.action_closet -> {
-
+                    fragmentManager.beginTransaction()
+                            .replace(fragmentContainer, ClosetFragment())
+                            .addToBackStack(null)
+                            .commit()
                     true
                 }
                 else -> false
@@ -163,23 +171,11 @@ class NavDrawerActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedList
             val id = item.itemId
 
             when (id) {
-                R.id.payment -> {
-                    drawerLayout!!.closeDrawers()
-                }
-                R.id.freebie -> {
-                    Toast.makeText(applicationContext, "Home", Toast.LENGTH_SHORT).show()
-                    drawerLayout!!.closeDrawers()
-                }
-                R.id.trip -> {
-                    Toast.makeText(applicationContext, "Trash", Toast.LENGTH_SHORT).show()
+                R.id.home -> {
                     drawerLayout!!.closeDrawers()
                 }
                 R.id.logout -> {
                     signOut()
-                    drawerLayout!!.closeDrawers()
-                }
-                R.id.tips -> {
-                    Toast.makeText(applicationContext, "Trash", Toast.LENGTH_SHORT).show()
                     drawerLayout!!.closeDrawers()
                 }
             }
