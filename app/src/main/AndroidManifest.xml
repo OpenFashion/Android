@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CameraActivity" />
+        <activity android:name=".NavDrawerActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <provider
             android:authorities="illinois.hack.openfashion.fileprovider"
             android:name="android.support.v4.content.FileProvider"
@@ -31,9 +33,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".NavDrawerActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
         <activity android:name=".BaseActivity" />
     </application>
 
